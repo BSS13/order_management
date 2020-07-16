@@ -20,9 +20,9 @@ app.use((req,res,next) => {
 
 
 app.get('/api/getOrders' ,(req,res,next)=>{
-console.log("Function called");
+// console.log("Function called");
 let mongoose = require("mongoose");
-mongoose.connect(' mongodb://127.0.0.1:27017/customers', { useNewUrlParser: true });
+mongoose.connect(' mongodb://127.0.0.1:27017/ordertest', { useNewUrlParser: true });
 
 var connection = mongoose.connection;
 var torders =[];
@@ -86,7 +86,7 @@ connection.once('open', function () {
           
           function (cb) {
             
-            connection.db.collection("customer_comapnies", function(err, collection){
+            connection.db.collection("customer_companies", function(err, collection){
                 collection.find({"company_id":company_id}).toArray(function(err, data){
                   customer_company = data[0].company_name;
                   order_details.customer_company=customer_company;
@@ -269,9 +269,9 @@ connection.once('open', function () {
 
 
 app.post('/api/searchOrders' ,(req,res,next)=>{
-  console.log("Function called");
+  // console.log("Function called");
   let mongoose = require("mongoose");
-  mongoose.connect(' mongodb://127.0.0.1:27017/customers', { useNewUrlParser: true });
+  mongoose.connect(' mongodb://127.0.0.1:27017/ordertest', { useNewUrlParser: true });
   
   var connection = mongoose.connection;
   var torders =[];
@@ -341,7 +341,7 @@ app.post('/api/searchOrders' ,(req,res,next)=>{
             
             function (cb) {
               
-              connection.db.collection("customer_comapnies", function(err, collection){
+              connection.db.collection("customer_companies", function(err, collection){
                   collection.find({"company_id":company_id}).toArray(function(err, data){
                     customer_company = data[0].company_name;
                     order_details.customer_company=customer_company;
@@ -522,13 +522,13 @@ app.post('/api/searchOrders' ,(req,res,next)=>{
 
   //Filter Orders
   app.post('/api/filterOrders' ,(req,res,next)=>{
-  console.log("Function called");
+  // console.log("Function called");
   var startDate = req.body.startDate;
   var endDate = req.body.endDate;
   console.log("Start date"+startDate);
   console.log("End date"+endDate);
   let mongoose = require("mongoose");
-  mongoose.connect(' mongodb://127.0.0.1:27017/customers', { useNewUrlParser: true });
+  mongoose.connect(' mongodb://127.0.0.1:27017/ordertest', { useNewUrlParser: true });
   
   var connection = mongoose.connection;
   
@@ -599,7 +599,7 @@ app.post('/api/searchOrders' ,(req,res,next)=>{
             
             function (cb) {
               
-              connection.db.collection("customer_comapnies", function(err, collection){
+              connection.db.collection("customer_companies", function(err, collection){
                   collection.find({"company_id":company_id}).toArray(function(err, data){
                     customer_company = data[0].company_name;
                     order_details.customer_company=customer_company;
@@ -787,7 +787,23 @@ app.use((error,req,res,next)=>{
 
 const PORT = 5000 || process.env.PORT;
  app.listen(PORT,()=>{
-  var spawn = require("child_process").spawn; 
+  let exec = require('child_process').exec
+  let command = 'mongoimport --db ordertest --collection customer_names --type csv --file customers.csv --headerline'+
+                '&& mongoimport --db ordertest --collection orders --type csv --file orders.csv --headerline'+
+                '&& mongoimport --db ordertest --collection order_items --type csv --file order_items.csv --headerline'+
+                '&& mongoimport --db ordertest --collection customer_companies --type csv --file customer_companies.csv --headerline'+
+                '&& mongoimport --db ordertest --collection deliveries --type csv --file deliveries.csv --headerline'
+  exec(command, (err, stdout, stderr) => {
+  // check for errors or if it was succesfuly
+
+  if(!err){
+    console.log("Success");
+  }
+  else{
+    console.log(err);
+  }
+  
+  }) 
    
   console.log(`Server Started on Port ${PORT}`);
  }); 
