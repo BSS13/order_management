@@ -66,3 +66,23 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+### Project Setup 
+
+Prerequisite:
+System should have node, mongodb installed
+
+Step1) Clone the project https://github.com/BSS13/order_management.git
+Step2) Open Project in Code editor 
+Step3) Open terminal:
+      --> npm i (for frontend)
+      --> cd backend
+         --> npm i (for backend)
+Step4) Start Mongod (execute mongo.exe) before running the project
+Step5) At the backend: 
+        run the command : npm start 
+        -This starts the server and loads the csv files into MongoDB 
+        - When the process is done, returns Success on console
+Step6) Switch to Frontend, run the command (npm start)
+
+Watch the action at "localhost:3000"
