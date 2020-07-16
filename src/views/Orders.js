@@ -11,16 +11,18 @@ const Orders  = (props) =>{
     const [tableTitle,setTableTitle] = useState('Orders');
     const [orders,setOrders] = useState(records);
     const [amount,setAmount] = useState(0);
-    const [startDate,setStartDate]= useState('');
-    const [endDate,setEndDate] = useState('');
+    const [startDate,setStartDate]= useState('2020-01-01');
+    const [endDate,setEndDate] = useState('2020-01-01');
     const months = ["Jan","Feb","March","April","May","June","July","August","September","October","November","December"];
 
     const convertDateTime  = (rdate)=>{
+              rdate = rdate.toString();
+            //   console.log(rdate);
               let date = new Date(rdate);
               let order_date='';
               let month = months[date.getMonth()];
               order_date=month+" ";
-              let dt = date.getDate();
+              let dt = date.getDate()-1;
               if(dt=='1'){
                  order_date += dt+'st';
               }
@@ -50,59 +52,76 @@ const Orders  = (props) =>{
           var searchKey = document.getElementById('searchKey').value;
           axios.post("http://localhost:5000/api/searchOrders",{searchKey:searchKey})
           .then((res)=>{
-              console.log(res.data.msg);
-              let responseArray = res.data.msg;
-              let arrayTemp=[];
-              let amount = 0;
-        
-              for(let i=0;i<responseArray.length;i++){
-                arrayTemp.push(responseArray[i]);
-                amount = amount+responseArray[i].total_amount;
+            let responseArray = res.data.msg;
+            let amount = 0;
+            let arrayTemp=[];
+      
+            for(let i=0;i<responseArray.length;i++){
                 let date = convertDateTime(responseArray[i].order_date);
-                responseArray[i].order_date = date;
-                responseArray[i].delivered_amount= "$ "+ responseArray[i].delivered_amount;
+                 responseArray[i].order_date = date;
+              
+                if(responseArray[i].total_amount == '-'){
+                  amount = amount+0;
+                }else{
+                amount = amount+responseArray[i].total_amount;
+                }
+
                 responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
-              }
-        
-              setOrders(arrayTemp);
-              setAmount(amount);
-              // setBattleResults(res.data);
-              setIsLoading(false);
-        
+ 
+                arrayTemp.push(responseArray[i]);
+              
+            }
+      
+            setOrders(arrayTemp);
+            setAmount(amount);
+            setIsLoading(false);
+      
           });
           
     }
 
     const filterOrders = () =>{
+        // var startDate = document.getElementById('startDate').value;
+        // var endDate = document.getElementById('endDate').value;
+        // document.getElementById('startDate').defaultValue= '2020-01-10';
+        // document.getElementById('endDate').defaultValue = '2020-01-15';
+        
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
-        setStartDate(document.getElementById('startDate').value);
-        setEndDate(document.getElementById('endDate').value)
+
+        setStartDate(startDate);
+        setEndDate(endDate);
 
         console.log(startDate);
         console.log(endDate);
         axios.post("http://localhost:5000/api/filterOrders",{startDate,endDate})
         .then((res)=>{
-            console.log(res.data.msg);
             let responseArray = res.data.msg;
-            let arrayTemp=[];
             let amount = 0;
+            let arrayTemp=[];
       
             for(let i=0;i<responseArray.length;i++){
-              arrayTemp.push(responseArray[i]);
-              amount = amount+responseArray[i].total_amount;
-              let date = convertDateTime(responseArray[i].order_date);
-              responseArray[i].order_date = date;
-              responseArray[i].delivered_amount= "$ "+ responseArray[i].delivered_amount;
-              responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
-         }
+                let date = convertDateTime(responseArray[i].order_date);
+                 responseArray[i].order_date = date;
+              
+                if(responseArray[i].total_amount == '-'){
+                  amount = amount+0;
+                }else{
+                amount = amount+responseArray[i].total_amount;
+                }
+
+                responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+ 
+                arrayTemp.push(responseArray[i]);
+              
+            }
       
             setOrders(arrayTemp);
             setAmount(amount);
-            // setBattleResults(res.data);
             setIsLoading(false);
       
-        });
+          });      
+       
     }
 
 
@@ -115,17 +134,23 @@ const Orders  = (props) =>{
             let arrayTemp=[];
       
             for(let i=0;i<responseArray.length;i++){
-              arrayTemp.push(responseArray[i]);
-              amount = amount+responseArray[i].total_amount;
-              let date = convertDateTime(responseArray[i].order_date);
-              responseArray[i].order_date = date;
-              responseArray[i].delivered_amount= "$ "+ responseArray[i].delivered_amount;
-              responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+                let date = convertDateTime(responseArray[i].order_date);
+                 responseArray[i].order_date = date;
+              
+                if(responseArray[i].total_amount == '-'){
+                  amount = amount+0;
+                }else{
+                amount = amount+responseArray[i].total_amount;
+                }
+
+                responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+ 
+                arrayTemp.push(responseArray[i]);
+              
             }
       
             setOrders(arrayTemp);
             setAmount(amount);
-            // setBattleResults(res.data);
             setIsLoading(false);
       
         });
@@ -149,9 +174,9 @@ const Orders  = (props) =>{
            
            <div style={{'marginLeft':'10px'}}>
             <span>Start Date</span>
-            <input type='date' id="startDate" onSelect={filterOrders}/>
+            <input type='date' id="startDate" value={startDate} onChange={filterOrders}/>
             <span>- End Date</span>
-            <input type='date' id="endDate" onSelect={filterOrders}/>
+            <input type='date' id="endDate" value={endDate} onChange={filterOrders}/>
            </div>
         </div>
         <br>
