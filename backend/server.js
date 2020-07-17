@@ -43,23 +43,23 @@ app.use((error,req,res,next)=>{
 //Setting up port and loading of csv files on start of server
 const PORT = 5000 || process.env.PORT;
  app.listen(PORT,()=>{
-  // let exec = require('child_process').exec
-  // let command = 'mongoimport --db ordertest --collection customer_names --type csv --file customers.csv --headerline'+
-  //               '&& mongoimport --db ordertest --collection orders --type csv --file orders.csv --headerline'+
-  //               '&& mongoimport --db ordertest --collection order_items --type csv --file order_items.csv --headerline'+
-  //               '&& mongoimport --db ordertest --collection customer_companies --type csv --file customer_companies.csv --headerline'+
-  //               '&& mongoimport --db ordertest --collection deliveries --type csv --file deliveries.csv --headerline'
-  // exec(command, (err, stdout, stderr) => {
-  // // check for errors or if it was succesfuly
+  let exec = require('child_process').exec
+  let command = 'mongoimport --db ordertest --collection customer_names --type csv --file customers.csv --headerline'+
+                '&& mongoimport --db ordertest --collection orders --type csv --file orders.csv --headerline'+
+                '&& mongoimport --db ordertest --collection order_items --type csv --file order_items.csv --headerline'+
+                '&& mongoimport --db ordertest --collection customer_companies --type csv --file customer_companies.csv --headerline'+
+                '&& mongoimport --db ordertest --collection deliveries --type csv --file deliveries.csv --headerline'
+  exec(command, (err, stdout, stderr) => {
+  // check for errors or if it was succesfuly
 
-  // if(!err){
-  //   console.log("Success");
-  // }
-  // else{
-  //   console.log(err);
-  // }
+  if(!err){
+    console.log("Success");
+  }
+  else{
+    console.log(err);
+  }
   
-  // }) 
+  }) 
    
   console.log(`Server Started on Port ${PORT}`);
  }); 
