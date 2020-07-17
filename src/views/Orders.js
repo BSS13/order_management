@@ -65,8 +65,11 @@ const Orders  = (props) =>{
           amount = amount+responseArray[i].total_amount;
           }
 
-          responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+          amount = Math.round((amount + Number.EPSILON) * 100) / 100;
 
+
+          responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+          
           arrayTemp.push(responseArray[i]);
         
       }

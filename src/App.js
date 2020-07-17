@@ -8,10 +8,14 @@ function App() {
        <Router>
        <Switch>
          <Route path="/" exact>
+           <Redirect to="/orders"></Redirect>
+        </Route>
+
+        <Route path="/orders" exact>
            <Orders />
         </Route>
 
-        <Redirect to="/"/>
+        <Redirect to="/orders"/>
       </Switch>
       </Router>
     </div>

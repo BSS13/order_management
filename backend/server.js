@@ -40,7 +40,7 @@ app.use((error,req,res,next)=>{
 });
 
 
-//Setting up port and loading of csv files on start of server
+//Setting up port and loading of csv files on start of serer
 const PORT = 5000 || process.env.PORT;
  app.listen(PORT,()=>{
   let exec = require('child_process').exec
