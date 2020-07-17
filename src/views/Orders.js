@@ -15,6 +15,7 @@ const Orders  = (props) =>{
     const [endDate,setEndDate] = useState('2020-01-01');
     const months = ["Jan","Feb","March","April","May","June","July","August","September","October","November","December"];
 
+    //Function to convert date and time
     const convertDateTime  = (rdate)=>{
               rdate = rdate.toString();
             //   console.log(rdate);
@@ -48,38 +49,47 @@ const Orders  = (props) =>{
              return order_date;
     }
 
+    //Function to strucuture the response based on the responses received
+    const generateResponse = (data) =>{
+      let responseArray = data;
+      let amount = 0;
+      let arrayTemp=[];
+
+      for(let i=0;i<responseArray.length;i++){
+          let date = convertDateTime(responseArray[i].order_date);
+           responseArray[i].order_date = date;
+        
+          if(responseArray[i].total_amount == '-'){
+            amount = amount+0;
+          }else{
+          amount = amount+responseArray[i].total_amount;
+          }
+
+          responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
+
+          arrayTemp.push(responseArray[i]);
+        
+      }
+
+      setOrders(arrayTemp);
+      setAmount(amount);
+      setIsLoading(false);
+
+
+    }
+
+    //Function called from search 
     const searchOrders = () =>{
           var searchKey = document.getElementById('searchKey').value;
           axios.post("http://localhost:5000/api/searchOrders",{searchKey:searchKey})
           .then((res)=>{
             let responseArray = res.data.msg;
-            let amount = 0;
-            let arrayTemp=[];
-      
-            for(let i=0;i<responseArray.length;i++){
-                let date = convertDateTime(responseArray[i].order_date);
-                 responseArray[i].order_date = date;
-              
-                if(responseArray[i].total_amount == '-'){
-                  amount = amount+0;
-                }else{
-                amount = amount+responseArray[i].total_amount;
-                }
-
-                responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
- 
-                arrayTemp.push(responseArray[i]);
-              
-            }
-      
-            setOrders(arrayTemp);
-            setAmount(amount);
-            setIsLoading(false);
-      
+            generateResponse(responseArray);
           });
-          
-    }
+     }
 
+
+    //Function called from date picker to filter orders
     const filterOrders = () =>{
         // var startDate = document.getElementById('startDate').value;
         // var endDate = document.getElementById('endDate').value;
@@ -97,62 +107,18 @@ const Orders  = (props) =>{
         axios.post("http://localhost:5000/api/filterOrders",{startDate,endDate})
         .then((res)=>{
             let responseArray = res.data.msg;
-            let amount = 0;
-            let arrayTemp=[];
-      
-            for(let i=0;i<responseArray.length;i++){
-                let date = convertDateTime(responseArray[i].order_date);
-                 responseArray[i].order_date = date;
-              
-                if(responseArray[i].total_amount == '-'){
-                  amount = amount+0;
-                }else{
-                amount = amount+responseArray[i].total_amount;
-                }
-
-                responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
- 
-                arrayTemp.push(responseArray[i]);
-              
-            }
-      
-            setOrders(arrayTemp);
-            setAmount(amount);
-            setIsLoading(false);
-      
+            generateResponse(responseArray);
           });      
-       
-    }
+       }
 
 
+    //USe Efffect to call and fetch the results
     useEffect(()=>{
         axios.get("http://localhost:5000/api/getOrders")
         .then((res)=>{
             console.log(res.data.msg);
             let responseArray = res.data.msg;
-            let amount = 0;
-            let arrayTemp=[];
-      
-            for(let i=0;i<responseArray.length;i++){
-                let date = convertDateTime(responseArray[i].order_date);
-                 responseArray[i].order_date = date;
-              
-                if(responseArray[i].total_amount == '-'){
-                  amount = amount+0;
-                }else{
-                amount = amount+responseArray[i].total_amount;
-                }
-
-                responseArray[i].total_amount= "$ "+ responseArray[i].total_amount;
- 
-                arrayTemp.push(responseArray[i]);
-              
-            }
-      
-            setOrders(arrayTemp);
-            setAmount(amount);
-            setIsLoading(false);
-      
+            generateResponse(responseArray);
         });
       },[]);
     
